@@ -1,0 +1,136 @@
+{% extends "admin/base.html" %}
+{% block title %}Invoice {{ invoice.bill_number }}{% endblock %}
+{% block content %}
+
+<div class="breadcrumb no-print">
+  <a href="{{ url_for('admin_billing') }}">Billing</a>
+  <span class="breadcrumb-sep">›</span>
+  <span>{{ invoice.bill_number }}</span>
+</div>
+
+<div class="admin-header no-print">
+  <h2>🧾 Invoice — {{ invoice.bill_number }}</h2>
+  <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+    <button class="btn btn-outline" onclick="printInvoice()">🖨️ Print</button>
+    <a href="{{ url_for('admin_download_invoice', inv_id=invoice.id) }}" class="btn btn-primary">⬇️ Download PDF</a>
+    <a href="{{ url_for('admin_billing') }}" class="btn btn-outline">← Back</a>
+  </div>
+</div>
+
+<!-- Invoice Card -->
+<div class="invoice-card" id="invoicePrint">
+
+  <!-- Header -->
+  <div class="invoice-header">
+    <div style="font-size:2rem;margin-bottom:0.4rem;">✂️</div>
+    <h2>SLV TAILOR SHOP</h2>
+    <p>KEMPANARASIMHAIAH</p>
+    <p>Arasanakunte, Solur Hobli, Magadi Taluk, Bangalore - 562127</p>
+    <p>📞 9535536981</p>
+  </div>
+
+  <!-- Bill number bar -->
+  <div style="background:var(--accent-light);padding:0.75rem 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+    <div><span style="font-size:0.8rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;">Bill Number</span><br><strong style="font-size:1.2rem;color:var(--primary-dark);">{{ invoice.bill_number }}</strong></div>
+    <div style="text-align:right;"><span style="font-size:0.8rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;">Date</span><br><strong>{{ invoice.created_at[:10] if invoice.created_at else '—' }}</strong></div>
+  </div>
+
+  <div class="invoice-body">
+
+    <!-- Customer Info -->
+    <h4 style="color:var(--primary);margin-bottom:0.75rem;font-size:0.85rem;text-transform:uppercase;letter-spacing:1px;">👤 Customer Details</h4>
+    <div class="invoice-row">
+      <div class="invoice-field">
+        <label>Customer Name</label>
+        <p>{{ invoice.customer_name }}</p>
+      </div>
+      <div class="invoice-field">
+        <label>Phone</label>
+        <p>{{ invoice.phone }}</p>
+      </div>
+      <div class="invoice-field">
+        <label>Age</label>
+        <p>{{ invoice.age or '—' }}</p>
+      </div>
+      <div class="invoice-field">
+        <label>Dress Type</label>
+        <p>{{ invoice.dress_type }}</p>
+      </div>
+    </div>
+    <div class="invoice-field" style="margin-bottom:1rem;">
+      <label>Address</label>
+      <p>{{ invoice.address or '—' }}</p>
+    </div>
+
+    <div class="invoice-divider"></div>
+
+    <!-- Dates -->
+    <h4 style="color:var(--primary);margin-bottom:0.75rem;font-size:0.85rem;text-transform:uppercase;letter-spacing:1px;">📅 Dates</h4>
+    <div class="invoice-row">
+      <div class="invoice-field">
+        <label>Booking Date</label>
+        <p>{{ invoice.booking_date or '—' }}</p>
+      </div>
+      <div class="invoice-field">
+        <label>Delivery Date</label>
+        <p>{{ invoice.delivery_date or '—' }}</p>
+      </div>
+    </div>
+
+    <!-- Measurements -->
+    {% if invoice.measurements %}
+    <div class="invoice-divider"></div>
+    <h4 style="color:var(--primary);margin-bottom:0.75rem;font-size:0.85rem;text-transform:uppercase;letter-spacing:1px;">📏 Measurements</h4>
+    <div style="background:var(--bg2);border-radius:var(--radius-sm);padding:1rem;font-size:0.92rem;border:1px solid var(--border);">
+      <pre style="white-space:pre-wrap;font-family:inherit;margin:0;">{{ invoice.measurements }}</pre>
+    </div>
+    {% endif %}
+
+    {% if invoice.remarks %}
+    <div style="margin-top:0.75rem;">
+      <span style="font-size:0.8rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;">Remarks</span>
+      <p style="margin-top:0.2rem;">{{ invoice.remarks }}</p>
+    </div>
+    {% endif %}
+
+    <div class="invoice-divider"></div>
+
+    <!-- Payment Summary -->
+    <h4 style="color:var(--primary);margin-bottom:0.75rem;font-size:0.85rem;text-transform:uppercase;letter-spacing:1px;">💰 Payment Summary</h4>
+    <div class="invoice-totals">
+      <div class="invoice-total-row">
+        <span>Total Amount</span>
+        <span>₹ {{ "%.2f" | format(invoice.final_amount) }}</span>
+      </div>
+      <div class="invoice-total-row">
+        <span>Advance Paid</span>
+        <span>₹ {{ "%.2f" | format(invoice.advance_amount or 0) }}</span>
+      </div>
+      <div class="invoice-total-row final">
+        <span>Balance Due</span>
+        <span>₹ {{ "%.2f" | format(invoice.balance_amount or 0) }}</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer bar -->
+  <div class="invoice-footer-bar">
+    Thank you for choosing SLV Tailor Shop! We value your trust. &nbsp;|&nbsp; 📞 9535536981
+  </div>
+
+</div>
+
+<!-- Print styles -->
+<style>
+@media print {
+  .no-print { display: none !important; }
+  .admin-layout { display: block !important; }
+  .sidebar { display: none !important; }
+  .admin-main { padding: 0 !important; }
+  .invoice-card { box-shadow: none !important; border: 1px solid #ddd !important; max-width: 100% !important; }
+  body { background: white !important; }
+}
+</style>
+
+{% endblock %}

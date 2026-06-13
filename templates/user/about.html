@@ -1,0 +1,68 @@
+{% extends "user/base.html" %}
+{% block title %}About Us — SLV Tailor Shop{% endblock %}
+{% block content %}
+
+<div class="page-banner">
+  <h1>About SLV Tailor Shop</h1>
+  <p>Your trusted tailoring partner in Magadi Taluk</p>
+</div>
+
+<section class="section">
+  <div class="container" style="max-width:800px;">
+    <div class="grid-2" style="align-items:center;gap:2.5rem;">
+      <div>
+        <span style="font-size:5rem;">✂️</span>
+        <h2 style="margin-top:1rem;">KEMPANARASIMHAIAH</h2>
+        <p class="text-muted" style="font-size:0.9rem;">Master Tailor · SLV Tailor Shop</p>
+        <p>With years of experience in traditional and modern tailoring, KEMPANARASIMHAIAH has been serving the Magadi Taluk community with dedication, precision, and pride.</p>
+        <p>From classic shirts and formal pants to elegant saree blouses and designer churidars — every stitch is made with care and attention to detail.</p>
+        <a href="tel:9535536981" class="btn btn-primary mt-2">📞 9535536981</a>
+      </div>
+      <div>
+        <div class="card">
+          <div class="card-body" style="padding:1.5rem;">
+            <h3 style="margin-bottom:1rem;">🏪 Shop Info</h3>
+            {% for item in [
+              ('📍', 'Location', 'Arasanakunte, Solur Hobli, Magadi Taluk, Bangalore - 562127'),
+              ('📞', 'Phone', '9535536981'),
+              ('⏰', 'Hours', 'Monday to Saturday: 9:00 AM – 7:00 PM'),
+              ('🎯', 'Speciality', 'Men\'s & Women\'s Custom Stitching'),
+            ] %}
+            <div style="display:flex;gap:0.75rem;margin-bottom:1rem;">
+              <span style="font-size:1.3rem;">{{ item[0] }}</span>
+              <div>
+                <div style="font-weight:600;font-size:0.88rem;color:var(--text-muted);">{{ item[1] }}</div>
+                <div>{{ item[2] }}</div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:2.5rem;">
+      <h2 style="margin-bottom:1.25rem;">What We Offer</h2>
+      <div class="grid-3">
+        {% for item in [
+          ('👔', 'Men\'s Stitching', 'Shirts, pants, suits, formal wear, kurtha and more'),
+          ('👗', 'Women\'s Stitching', 'Saree blouses, churidars, lehengas, kurthas, frocks'),
+          ('✨', 'Neck Designs', 'Special kurtha neck design gallery with modern patterns'),
+          ('📐', 'Alterations', 'Fitting alterations and repairs for existing clothes'),
+          ('🎉', 'Occasion Wear', 'Wedding, festival and celebration outfits'),
+          ('📦', 'Bulk Orders', 'School uniforms and bulk stitching available'),
+        ] %}
+        <div class="card">
+          <div class="card-body text-center" style="padding:1.25rem;">
+            <div style="font-size:1.8rem;margin-bottom:0.4rem;">{{ item[0] }}</div>
+            <div class="card-title">{{ item[1] }}</div>
+            <p class="card-text">{{ item[2] }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

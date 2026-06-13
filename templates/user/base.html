@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SLV Tailor Shop - Professional tailoring services in Arasanakunte, Magadi Taluk, Bangalore. Men's & Women's stitching by KEMPANARASIMHAIAH.">
+  <meta name="theme-color" content="#3E2723">
+  <title>{% block title %}SLV Tailor Shop{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="navbar-inner">
+      <a href="{{ url_for('home') }}" class="navbar-brand">
+        <div class="brand-icon" aria-hidden="true">✂️</div>
+        <div>
+          <div>SLV Tailor Shop</div>
+          <div style="font-size:0.65rem;font-weight:400;color:rgba(255,255,255,0.6);">Magadi, Bangalore</div>
+        </div>
+      </a>
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" role="list">
+        <a href="{{ url_for('home') }}" {% if request.endpoint=='home' %}class="active"{% endif %}>Home</a>
+        <a href="{{ url_for('designs') }}" {% if request.endpoint=='designs' %}class="active"{% endif %}>Designs</a>
+        <a href="{{ url_for('prices') }}" {% if request.endpoint=='prices' %}class="active"{% endif %}>Prices</a>
+        <a href="{{ url_for('booking') }}" {% if request.endpoint=='booking' %}class="active"{% endif %}>Book Now</a>
+        <a href="{{ url_for('about') }}" {% if request.endpoint=='about' %}class="active"{% endif %}>About</a>
+        <a href="{{ url_for('contact') }}" {% if request.endpoint=='contact' %}class="active"{% endif %}>Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page content -->
+  <main id="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h4>✂️ SLV Tailor Shop</h4>
+          <p>Professional tailoring services by <strong>KEMPANARASIMHAIAH</strong>.</p>
+          <p>Quality stitching for Men, Women & all occasions.</p>
+        </div>
+        <div>
+          <h4>Quick Links</h4>
+          <a href="{{ url_for('designs') }}">Design Gallery</a><br>
+          <a href="{{ url_for('prices') }}">Stitching Prices</a><br>
+          <a href="{{ url_for('booking') }}">Book Appointment</a><br>
+          <a href="{{ url_for('about') }}">About Us</a>
+        </div>
+        <div>
+          <h4>Contact Us</h4>
+          <p>📞 <a href="tel:9535536981">9535536981</a></p>
+          <p>📍 Arasanakunte, Solur Hobli,<br>Magadi Taluk, Bangalore - 562127</p>
+          <p>⏰ Mon–Sat: 9AM – 7PM</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 SLV Tailor Shop · KEMPANARASIMHAIAH · Magadi, Bangalore</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scroll to top -->
+  <button class="scroll-top" aria-label="Scroll to top" title="Back to top">↑</button>
+
+  <!-- Image modal -->
+  <div class="modal-overlay" id="imgModalOverlay" onclick="closeImageModal()">
+    <div class="modal img-modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <span class="modal-title" id="imgModalCaption"></span>
+        <button class="modal-close" onclick="closeImageModal()" aria-label="Close">×</button>
+      </div>
+      <img id="imgModalImg" src="" alt="Design" loading="lazy">
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

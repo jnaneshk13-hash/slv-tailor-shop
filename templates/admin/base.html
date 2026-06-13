@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Admin{% endblock %} — SLV Admin</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-extra.css') }}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+<div class="admin-layout" id="adminLayout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" role="navigation" aria-label="Admin navigation">
+    <div class="sidebar-brand">
+      ✂️ SLV Tailor Shop
+      <span>Admin Panel</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Main</div>
+      <a href="{{ url_for('admin_dashboard') }}" {% if request.endpoint=='admin_dashboard' %}class="active"{% endif %}>🏠 Dashboard</a>
+
+      <div class="nav-section">Catalogue</div>
+      <a href="{{ url_for('admin_categories') }}" {% if request.endpoint=='admin_categories' %}class="active"{% endif %}>🏷️ Categories</a>
+      <a href="{{ url_for('admin_designs') }}" {% if request.endpoint=='admin_designs' %}class="active"{% endif %}>🎨 Designs</a>
+      <a href="{{ url_for('admin_prices') }}" {% if request.endpoint=='admin_prices' %}class="active"{% endif %}>💰 Prices</a>
+
+      <div class="nav-section">Business</div>
+      <a href="{{ url_for('admin_orders') }}" {% if 'order' in request.endpoint %}class="active"{% endif %}>📋 Orders</a>
+      <a href="{{ url_for('admin_billing') }}" {% if 'bill' in request.endpoint or 'invoice' in request.endpoint %}class="active"{% endif %}>🧾 Billing</a>
+      <a href="{{ url_for('admin_create_bill') }}" {% if request.endpoint=='admin_create_bill' %}class="active"{% endif %}>➕ New Bill</a>
+
+      <div class="nav-section">Export</div>
+      <a href="{{ url_for('admin_export_orders') }}">⬇️ Export Orders</a>
+      <a href="{{ url_for('admin_export_invoices') }}">⬇️ Export Invoices</a>
+
+      <div class="nav-section">Account</div>
+      <a href="{{ url_for('home') }}" target="_blank">🌐 View Site</a>
+      <a href="{{ url_for('admin_logout') }}">🚪 Logout</a>
+    </nav>
+  </aside>
+
+  <!-- Main content -->
+  <div class="admin-main">
+    <!-- Top bar -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border);">
+      <button class="btn btn-sm btn-outline mobile-menu-btn" onclick="document.getElementById('adminLayout').classList.toggle('sidebar-open')" style="display:none;">☰ Menu</button>
+      <div style="flex:1;"></div>
+      <span style="font-size:0.88rem;color:var(--text-muted);">👤 {{ session.admin_name }}</span>
+    </div>
+
+    {% block content %}{% endblock %}
+  </div>
+</div>
+
+<!-- Global modal overlay closer -->
+<script>
+document.querySelectorAll('.modal-overlay').forEach(o=>{
+  o.addEventListener('click',e=>{ if(e.target===o){o.classList.remove('open');document.body.style.overflow=''; }});
+});
+</script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

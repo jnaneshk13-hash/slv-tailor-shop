@@ -1,0 +1,73 @@
+{% extends "admin/base.html" %}
+{% block title %}Prices{% endblock %}
+{% block content %}
+
+<div class="admin-header">
+  <h2>💰 Stitching Prices</h2>
+  <button class="btn btn-primary" onclick="openModal('addPriceModal')">➕ Add Price</button>
+</div>
+
+<div class="table-wrapper">
+  <table class="table">
+    <thead>
+      <tr><th>#</th><th>Category</th><th>Gender</th><th>Stitch Type</th><th>Price</th><th>Description</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for p in prices %}
+      <tr>
+        <td>{{ p.id }}</td>
+        <td><strong>{{ p.cat_name }}</strong></td>
+        <td><span class="badge badge-{{ p.gender }}">{{ p.gender.title() }}</span></td>
+        <td>{{ p.stitch_type }}</td>
+        <td class="price-amount">₹ {{ p.price | int }}</td>
+        <td>{{ p.description or '—' }}</td>
+        <td>
+          <a href="{{ url_for('admin_delete_price', pid=p.id) }}" class="btn btn-sm btn-danger"
+             data-confirm="Delete this price entry?">🗑️</a>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" class="text-center text-muted" style="padding:2rem;">No prices yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Add Price Modal -->
+<div class="modal-overlay" id="addPriceModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">➕ Add Price</span>
+      <button class="modal-close" onclick="closeModal('addPriceModal')">×</button>
+    </div>
+    <form method="POST" action="{{ url_for('admin_add_price') }}">
+      <div class="form-group">
+        <label class="form-label">Category *</label>
+        <select name="category_id" class="form-control" required>
+          <option value="">Select category</option>
+          {% for cat in categories %}
+          <option value="{{ cat.id }}">{{ cat.name }} ({{ cat.gender.title() }})</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Stitch Type *</label>
+        <input type="text" name="stitch_type" class="form-control" required placeholder="e.g. Regular Fit, Designer, Slim Fit">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Price (₹) *</label>
+        <input type="number" name="price" class="form-control" required min="0" step="0.5" placeholder="350">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <input type="text" name="description" class="form-control" placeholder="Optional note">
+      </div>
+      <div style="display:flex;gap:0.75rem;justify-content:flex-end;">
+        <button type="button" class="btn btn-outline" onclick="closeModal('addPriceModal')">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Price</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends "admin/base.html" %}
+{% block title %}Create New Bill{% endblock %}
+{% block content %}
+
+<div class="admin-header">
+  <h2>🧾 Create New Bill</h2>
+  <a href="{{ url_for('admin_billing') }}" class="btn btn-outline">← Back to Bills</a>
+</div>
+
+<div style="max-width:780px;">
+  <div class="card">
+    <div class="card-body" style="padding:1.75rem;">
+
+      <!-- Fill from order -->
+      <div class="form-group" style="background:var(--bg2);padding:1rem;border-radius:var(--radius-sm);margin-bottom:1.25rem;border:1px solid var(--border);">
+        <label class="form-label">⚡ Auto-Fill from Existing Order</label>
+        <select class="form-control" onchange="fillFromOrder(this)">
+          <option value="">Select order to auto-fill (optional)</option>
+          {% for order in orders %}
+          <option value="{{ order.id }}"
+            data-name="{{ order.name }}"
+            data-phone="{{ order.phone }}"
+            data-age="{{ order.age or '' }}"
+            data-address="{{ order.address or '' }}"
+            data-dress="{{ order.dress_type }}"
+            data-measurements="{{ order.measurements or '' }}"
+            data-delivery="{{ order.delivery_date or '' }}">
+            #{{ order.id }} — {{ order.name }} ({{ order.dress_type }})
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <form method="POST" action="{{ url_for('admin_create_bill') }}">
+        <h3 style="margin-bottom:1rem;color:var(--primary);">👤 Customer Details</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Customer Name *</label>
+            <input type="text" id="customer_name" name="customer_name" class="form-control" required placeholder="Full name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone *</label>
+            <input type="tel" id="phone" name="phone" class="form-control" required placeholder="10-digit number">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Age</label>
+            <input type="number" id="age" name="age" class="form-control" placeholder="Age" min="1" max="120">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Dress Type *</label>
+            <input type="text" id="dress_type" name="dress_type" class="form-control" required placeholder="e.g. Saree Blouse">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Address</label>
+          <input type="text" id="address" name="address" class="form-control" placeholder="Customer address">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Measurements</label>
+          <textarea id="measurements" name="measurements" class="form-control" rows="3" placeholder="Chest, Waist, Hips, Length, etc."></textarea>
+        </div>
+
+        <hr style="margin:1.25rem 0;border-color:var(--border);">
+        <h3 style="margin-bottom:1rem;color:var(--primary);">📅 Dates & Payment</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Booking Date *</label>
+            <input type="date" id="booking_date" name="booking_date" class="form-control" required value="{{ today }}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Delivery Date *</label>
+            <input type="date" id="delivery_date" name="delivery_date" class="form-control" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Final Amount (₹) *</label>
+            <input type="number" id="final_amount" name="final_amount" class="form-control" required step="0.5" min="0" placeholder="500">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Advance Paid (₹)</label>
+            <input type="number" id="advance_amount" name="advance_amount" class="form-control" step="0.5" min="0" placeholder="0" value="0">
+          </div>
+        </div>
+
+        <!-- Balance display -->
+        <div style="background:var(--bg2);padding:1rem;border-radius:var(--radius-sm);margin-bottom:1.25rem;border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-weight:600;color:var(--text-muted);">Balance Due:</span>
+          <span id="balance_display" style="font-size:1.3rem;font-weight:800;color:var(--primary);">Rs. 0.00</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Remarks</label>
+          <textarea name="remarks" class="form-control" rows="2" placeholder="Special instructions, design notes, etc."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg btn-block">🧾 Generate Invoice</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,120 @@
+{% extends "admin/base.html" %}
+{% block title %}Categories{% endblock %}
+{% block content %}
+
+<div class="admin-header">
+  <h2>🏷️ Dress Categories</h2>
+  <button class="btn btn-primary" onclick="openModal('addCatModal')">➕ Add Category</button>
+</div>
+
+<div class="table-wrapper">
+  <table class="table">
+    <thead>
+      <tr><th>#</th><th>Name</th><th>Gender</th><th>Description</th><th>Status</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for cat in categories %}
+      <tr>
+        <td>{{ cat.id }}</td>
+        <td><strong>{{ cat.name }}</strong></td>
+        <td><span class="badge badge-{{ cat.gender }}">{{ cat.gender.title() }}</span></td>
+        <td>{{ cat.description or '—' }}</td>
+        <td>
+          {% if cat.active %}<span class="badge" style="background:#E8F5E9;color:#2E7D32;">Active</span>
+          {% else %}<span class="badge" style="background:#FFEBEE;color:#C62828;">Inactive</span>{% endif %}
+        </td>
+        <td style="display:flex;gap:0.4rem;flex-wrap:wrap;">
+          <button class="btn btn-sm btn-outline"
+            onclick="openEditModal({{ cat.id }},'{{ cat.name | replace("'","\\'")|replace('"','&quot;') }}','{{ cat.gender }}','{{ cat.description or '' | replace("'","\\'")|replace('"','&quot;') }}',{{ cat.active }})">✏️ Edit</button>
+          <a href="{{ url_for('admin_delete_category', cid=cat.id) }}" class="btn btn-sm btn-danger"
+             data-confirm="Delete '{{ cat.name }}'? This will also remove related designs and prices.">🗑️</a>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="text-center text-muted" style="padding:2rem;">No categories yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Add Modal -->
+<div class="modal-overlay" id="addCatModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">➕ Add Category</span>
+      <button class="modal-close" onclick="closeModal('addCatModal')">×</button>
+    </div>
+    <form method="POST" action="{{ url_for('admin_add_category') }}">
+      <div class="form-group">
+        <label class="form-label">Category Name *</label>
+        <input type="text" name="name" class="form-control" required placeholder="e.g. Saree Blouse">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Gender *</label>
+        <select name="gender" class="form-control" required>
+          <option value="men">Men's</option>
+          <option value="women">Women's</option>
+          <option value="unisex">Unisex</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea name="description" class="form-control" rows="2" placeholder="Short description"></textarea>
+      </div>
+      <div style="display:flex;gap:0.75rem;justify-content:flex-end;">
+        <button type="button" class="btn btn-outline" onclick="closeModal('addCatModal')">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Category</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal-overlay" id="editCatModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">✏️ Edit Category</span>
+      <button class="modal-close" onclick="closeModal('editCatModal')">×</button>
+    </div>
+    <form method="POST" id="editCatForm" action="">
+      <div class="form-group">
+        <label class="form-label">Category Name *</label>
+        <input type="text" name="name" id="editCatName" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Gender *</label>
+        <select name="gender" id="editCatGender" class="form-control" required>
+          <option value="men">Men's</option>
+          <option value="women">Women's</option>
+          <option value="unisex">Unisex</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea name="description" id="editCatDesc" class="form-control" rows="2"></textarea>
+      </div>
+      <div class="form-check form-group">
+        <input type="checkbox" name="active" id="editCatActive" value="1">
+        <label for="editCatActive" class="form-label" style="margin:0;">Active</label>
+      </div>
+      <div style="display:flex;gap:0.75rem;justify-content:flex-end;">
+        <button type="button" class="btn btn-outline" onclick="closeModal('editCatModal')">Cancel</button>
+        <button type="submit" class="btn btn-primary">Update</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% block extra_js %}
+<script>
+function openEditModal(id, name, gender, desc, active) {
+  document.getElementById('editCatForm').action = '/admin/categories/edit/' + id;
+  document.getElementById('editCatName').value = name;
+  document.getElementById('editCatGender').value = gender;
+  document.getElementById('editCatDesc').value = desc;
+  document.getElementById('editCatActive').checked = active == 1;
+  openModal('editCatModal');
+}
+</script>
+{% endblock %}
+{% endblock %}

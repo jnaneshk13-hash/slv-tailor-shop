@@ -1,0 +1,47 @@
+{% extends "admin/base.html" %}
+{% block title %}Orders{% endblock %}
+{% block content %}
+
+<div class="admin-header">
+  <h2>📋 Customer Orders</h2>
+  <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+    <a href="{{ url_for('admin_export_orders') }}" class="btn btn-outline btn-sm">⬇️ Export CSV</a>
+    <a href="{{ url_for('admin_create_bill') }}" class="btn btn-primary btn-sm">🧾 Create Bill</a>
+  </div>
+</div>
+
+<!-- Status Filter -->
+<div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+  {% for s in [('','All'), ('pending','Pending'), ('in_progress','In Progress'), ('completed','Completed'), ('delivered','Delivered'), ('cancelled','Cancelled')] %}
+  <a href="{{ url_for('admin_orders', status=s[0]) }}" class="chip {% if selected_status==s[0] %}active{% endif %}">{{ s[1] }}</a>
+  {% endfor %}
+</div>
+
+<div class="table-wrapper">
+  <table class="table">
+    <thead>
+      <tr><th>#</th><th>Name</th><th>Phone</th><th>Dress Type</th><th>Booking Date</th><th>Delivery</th><th>Status</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for order in orders %}
+      <tr>
+        <td>#{{ order.id }}</td>
+        <td><strong>{{ order.name }}</strong></td>
+        <td><a href="tel:{{ order.phone }}">{{ order.phone }}</a></td>
+        <td>{{ order.dress_type }}</td>
+        <td>{{ order.booking_date or '—' }}</td>
+        <td>{{ order.delivery_date or '—' }}</td>
+        <td><span class="status status-{{ order.status }}">{{ order.status.replace('_',' ').title() }}</span></td>
+        <td style="display:flex;gap:0.4rem;flex-wrap:wrap;">
+          <a href="{{ url_for('admin_order_detail', oid=order.id) }}" class="btn btn-sm btn-outline">👁️ View</a>
+          <a href="{{ url_for('admin_create_bill') }}?order_id={{ order.id }}" class="btn btn-sm btn-primary">🧾 Bill</a>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8" class="text-center text-muted" style="padding:2rem;">No orders found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

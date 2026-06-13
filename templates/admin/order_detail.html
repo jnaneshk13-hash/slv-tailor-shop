@@ -1,0 +1,93 @@
+{% extends "admin/base.html" %}
+{% block title %}Order #{{ order.id }}{% endblock %}
+{% block content %}
+
+<div class="breadcrumb">
+  <a href="{{ url_for('admin_orders') }}">Orders</a>
+  <span class="breadcrumb-sep">›</span>
+  <span>Order #{{ order.id }}</span>
+</div>
+
+<div class="admin-header">
+  <h2>📋 Order #{{ order.id }} — {{ order.name }}</h2>
+  <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+    <a href="{{ url_for('admin_create_bill') }}" class="btn btn-primary">🧾 Create Bill</a>
+  </div>
+</div>
+
+<div class="grid-2" style="align-items:start;">
+  <!-- Order Details -->
+  <div class="card">
+    <div class="card-body">
+      <h3 style="margin-bottom:1rem;">Customer Details</h3>
+      {% for label, value in [
+        ('Name', order.name),
+        ('Phone', order.phone),
+        ('Age', order.age or '—'),
+        ('Address', order.address or '—'),
+        ('Dress Type', order.dress_type),
+        ('Booking Date', order.booking_date or '—'),
+        ('Delivery Date', order.delivery_date or '—'),
+        ('Remarks', order.remarks or '—'),
+      ] %}
+      <div style="display:flex;gap:1rem;padding:0.6rem 0;border-bottom:1px solid var(--border);">
+        <div style="min-width:110px;font-weight:600;color:var(--text-muted);font-size:0.88rem;">{{ label }}</div>
+        <div>{{ value }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div>
+    <!-- Measurements -->
+    <div class="card mb-2">
+      <div class="card-body">
+        <h3 style="margin-bottom:0.75rem;">📏 Measurements</h3>
+        {% if order.measurements %}
+        <pre style="white-space:pre-wrap;font-family:inherit;background:var(--bg2);padding:1rem;border-radius:var(--radius-sm);font-size:0.9rem;">{{ order.measurements }}</pre>
+        {% else %}
+        <p class="text-muted">No measurements recorded.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Update Status -->
+    <div class="card mb-2">
+      <div class="card-body">
+        <h3 style="margin-bottom:0.75rem;">Update Status</h3>
+        <form method="POST" action="{{ url_for('admin_update_order_status', oid=order.id) }}" style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+          <select name="status" class="form-control" style="flex:1;">
+            {% for s in ['pending','in_progress','completed','delivered','cancelled'] %}
+            <option value="{{ s }}" {% if order.status==s %}selected{% endif %}>{{ s.replace('_',' ').title() }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Invoice link -->
+    {% if invoice %}
+    <div class="card">
+      <div class="card-body">
+        <h3 style="margin-bottom:0.75rem;">🧾 Invoice</h3>
+        <p>Bill No: <strong>{{ invoice.bill_number }}</strong></p>
+        <p>Total: <strong>₹{{ invoice.final_amount | int }}</strong> | Balance: <strong>₹{{ invoice.balance_amount | int }}</strong></p>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.75rem;">
+          <a href="{{ url_for('admin_view_invoice', inv_id=invoice.id) }}" class="btn btn-primary btn-sm">👁️ View Invoice</a>
+          <a href="{{ url_for('admin_download_invoice', inv_id=invoice.id) }}" class="btn btn-outline btn-sm">⬇️ PDF</a>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <div class="card">
+      <div class="card-body text-center">
+        <p class="text-muted">No invoice created yet.</p>
+        <a href="{{ url_for('admin_create_bill') }}" class="btn btn-primary btn-sm">🧾 Create Bill</a>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

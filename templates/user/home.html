@@ -1,0 +1,147 @@
+{% extends "user/base.html" %}
+{% block title %}SLV Tailor Shop — Expert Tailoring in Magadi, Bangalore{% endblock %}
+{% block content %}
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <span class="hero-badge">Est. in Magadi Taluk</span>
+      <h1>Expert Tailoring<br>You Can Trust</h1>
+      <p class="sub">Men's, Women's & Traditional Wear — stitched to perfection by KEMPANARASIMHAIAH</p>
+      <div class="hero-btns">
+        <a href="{{ url_for('booking') }}" class="btn btn-accent btn-lg">📋 Book Now</a>
+        <a href="{{ url_for('designs') }}" class="btn btn-outline btn-lg" style="color:#fff;border-color:rgba(255,255,255,0.5);">🎨 View Designs</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Categories Section -->
+<section class="section" style="background:var(--bg2);">
+  <div class="container">
+    <div class="section-title">
+      <span>What We Stitch</span>
+      <h2>Dress Categories</h2>
+      <p class="text-muted">Choose from our wide range of tailoring services</p>
+    </div>
+    <div class="grid-4">
+      {% for cat in categories %}
+      <a href="{{ url_for('designs', category=cat.id) }}" class="card" style="text-decoration:none;">
+        <div class="card-body text-center" style="padding:1.5rem 1rem;">
+          <div style="font-size:2.5rem;margin-bottom:0.5rem;">
+            {% if 'shirt' in cat.name.lower() %}👔
+            {% elif 'pant' in cat.name.lower() %}👖
+            {% elif 'suit' in cat.name.lower() %}🕴️
+            {% elif 'saree' in cat.name.lower() or 'blouse' in cat.name.lower() %}🥻
+            {% elif 'churidar' in cat.name.lower() or 'salwar' in cat.name.lower() %}👗
+            {% elif 'lehenga' in cat.name.lower() %}💃
+            {% elif 'kurtha' in cat.name.lower() %}👘
+            {% elif 'frock' in cat.name.lower() %}🌸
+            {% else %}✂️{% endif %}
+          </div>
+          <div class="card-title">{{ cat.name }}</div>
+          <span class="badge badge-{{ cat.gender }}">{{ cat.gender.title() }}</span>
+          {% if cat.description %}<p class="card-text mt-1">{{ cat.description }}</p>{% endif %}
+        </div>
+      </a>
+      {% else %}
+      <div class="text-center text-muted" style="grid-column:1/-1;padding:2rem;">No categories yet.</div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Men's & Women's Quick Links -->
+<section class="section">
+  <div class="container">
+    <div class="grid-2">
+      <div class="card" style="background:linear-gradient(135deg,#E3F2FD,#BBDEFB);">
+        <div class="card-body" style="padding:2rem;">
+          <div style="font-size:3rem;margin-bottom:0.75rem;">👔</div>
+          <h3 style="color:#1565C0;">Men's Designs</h3>
+          <p style="color:#1976D2;">Shirts, Pants, Suits, Kurtha and more — perfectly measured and stitched.</p>
+          <a href="{{ url_for('designs', gender='men') }}" class="btn btn-primary mt-2">Browse Men's</a>
+        </div>
+      </div>
+      <div class="card" style="background:linear-gradient(135deg,#FCE4EC,#F8BBD0);">
+        <div class="card-body" style="padding:2rem;">
+          <div style="font-size:3rem;margin-bottom:0.75rem;">👗</div>
+          <h3 style="color:#880E4F;">Women's Designs</h3>
+          <p style="color:#AD1457;">Blouses, Churidars, Lehengas, Kurthas — elegant and modern styles.</p>
+          <a href="{{ url_for('designs', gender='women') }}" class="btn btn-primary mt-2" style="background:#880E4F;">Browse Women's</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Designs -->
+{% if featured %}
+<section class="section" style="background:var(--bg2);">
+  <div class="container">
+    <div class="section-title">
+      <span>Handpicked Styles</span>
+      <h2>Featured Designs</h2>
+    </div>
+    <div class="grid-3">
+      {% for design in featured %}
+      <div class="card design-card" onclick="openImageModal('{{ design.image_url or '' }}', '{{ design.name }}')">
+        {% if design.image_url %}
+          <img class="card-img lazy" data-src="{{ design.image_url }}" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{ design.name }}" loading="lazy">
+        {% else %}
+          <div class="no-image-placeholder">✂️<span style="font-size:0.8rem;margin-top:0.5rem;">{{ design.name }}</span></div>
+        {% endif %}
+        <div class="card-body">
+          <div class="card-title">{{ design.name }}</div>
+          <div class="card-text">{{ design.category_name }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-3">
+      <a href="{{ url_for('designs') }}" class="btn btn-primary btn-lg">View All Designs →</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Why Choose Us -->
+<section class="section">
+  <div class="container">
+    <div class="section-title">
+      <span>Why SLV Tailor?</span>
+      <h2>Quality You Can Feel</h2>
+    </div>
+    <div class="grid-4">
+      {% for item in [
+        ('✂️', 'Expert Craftsmanship', 'Years of experience in traditional and modern stitching'),
+        ('📏', 'Perfect Measurements', 'Precise measurements for the best possible fit'),
+        ('⚡', 'On-Time Delivery', 'We respect your time and deliver on schedule'),
+        ('💰', 'Affordable Prices', 'Premium quality at prices that fit your budget'),
+      ] %}
+      <div class="card">
+        <div class="card-body text-center" style="padding:1.5rem 1rem;">
+          <div style="font-size:2.2rem;margin-bottom:0.6rem;">{{ item[0] }}</div>
+          <div class="card-title">{{ item[1] }}</div>
+          <p class="card-text">{{ item[2] }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="background:linear-gradient(135deg,var(--primary-dark),var(--primary));padding:3rem 1rem;text-align:center;color:#fff;">
+  <div class="container">
+    <h2 style="color:#fff;margin-bottom:0.5rem;">Ready to Get Your Dress Stitched?</h2>
+    <p style="color:rgba(255,255,255,0.8);margin-bottom:1.5rem;font-size:1.05rem;">Book your appointment online or visit us in Arasanakunte, Magadi Taluk</p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <a href="{{ url_for('booking') }}" class="btn btn-accent btn-lg">📋 Book Appointment</a>
+      <a href="tel:9535536981" class="btn btn-lg" style="background:rgba(255,255,255,0.15);color:#fff;border:1.5px solid rgba(255,255,255,0.4);">📞 Call Now</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

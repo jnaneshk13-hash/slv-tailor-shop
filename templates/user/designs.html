@@ -1,0 +1,109 @@
+{% extends "user/base.html" %}
+{% block title %}Design Gallery — SLV Tailor Shop{% endblock %}
+{% block content %}
+
+<div class="page-banner">
+  <h1>Design Gallery</h1>
+  <p>Browse our collection of Men's, Women's & Kurtha Neck Designs</p>
+</div>
+
+<section class="section">
+  <div class="container">
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <form method="GET" action="{{ url_for('designs') }}" id="filterForm">
+        <div class="form-group">
+          <label class="form-label">Search</label>
+          <input type="text" name="search" class="form-control" placeholder="Search designs..." value="{{ search }}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select name="category" class="form-control" onchange="this.form.submit()">
+            <option value="">All Categories</option>
+            {% for cat in categories %}
+            <option value="{{ cat.id }}" {% if selected_category|string == cat.id|string %}selected{% endif %}>{{ cat.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Gender</label>
+          <select name="gender" class="form-control" onchange="this.form.submit()">
+            <option value="">All</option>
+            <option value="men" {% if selected_gender=='men' %}selected{% endif %}>Men's</option>
+            <option value="women" {% if selected_gender=='women' %}selected{% endif %}>Women's</option>
+            <option value="unisex" {% if selected_gender=='unisex' %}selected{% endif %}>Unisex</option>
+          </select>
+        </div>
+        <div class="form-group" style="align-self:flex-end;">
+          <button type="submit" class="btn btn-primary">🔍 Search</button>
+        </div>
+        {% if search or selected_category or selected_gender %}
+        <div class="form-group" style="align-self:flex-end;">
+          <a href="{{ url_for('designs') }}" class="btn btn-outline">✕ Clear</a>
+        </div>
+        {% endif %}
+      </form>
+    </div>
+
+    <!-- Quick Gender Tabs -->
+    <div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-bottom:1.5rem;">
+      <a href="{{ url_for('designs') }}" class="chip {% if not selected_gender and not selected_category %}active{% endif %}">All Designs</a>
+      <a href="{{ url_for('designs', gender='men') }}" class="chip {% if selected_gender=='men' %}active{% endif %}">👔 Men's</a>
+      <a href="{{ url_for('designs', gender='women') }}" class="chip {% if selected_gender=='women' %}active{% endif %}">👗 Women's</a>
+      {% for cat in categories %}
+        {% if 'neck' in cat.name.lower() or 'kurtha' in cat.name.lower() %}
+        <a href="{{ url_for('designs', category=cat.id) }}" class="chip {% if selected_category|string==cat.id|string %}active{% endif %}">✨ Kurtha Necks</a>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <!-- Results count -->
+    <p class="text-muted mb-2">{{ designs|length }} design(s) found</p>
+
+    <!-- Designs Grid -->
+    {% if designs %}
+    <div class="grid-3">
+      {% for design in designs %}
+      <div class="card design-card" onclick="openImageModal('{{ design.image_url or '' }}','{{ design.name | replace("'","\\'")}}')" style="cursor:pointer;">
+        {% if design.image_url %}
+          <img class="card-img lazy" data-src="{{ design.image_url }}"
+               src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+               alt="{{ design.name }}" loading="lazy">
+        {% else %}
+          <div class="no-image-placeholder">
+            <span>🧵</span>
+            <span style="font-size:0.8rem;margin-top:0.5rem;text-align:center;padding:0 0.5rem;">{{ design.name }}</span>
+          </div>
+        {% endif %}
+        <div class="card-body">
+          <div class="card-title">{{ design.name }}</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span class="card-text">{{ design.category_name }}</span>
+          </div>
+          {% if design.description %}
+          <p class="card-text mt-1" style="font-size:0.82rem;">{{ design.description[:80] }}{% if design.description|length > 80 %}…{% endif %}</p>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center" style="padding:3rem;color:var(--text-muted);">
+      <div style="font-size:3rem;margin-bottom:1rem;">🧵</div>
+      <h3>No designs found</h3>
+      <p>Try adjusting your search or filter.</p>
+      <a href="{{ url_for('designs') }}" class="btn btn-primary mt-2">View All Designs</a>
+    </div>
+    {% endif %}
+
+    <!-- Book CTA -->
+    <div style="background:var(--bg2);border-radius:var(--radius);padding:2rem;text-align:center;margin-top:2.5rem;border:1px solid var(--border);">
+      <h3>Found a design you like?</h3>
+      <p class="text-muted">Book your appointment and we'll stitch it for you!</p>
+      <a href="{{ url_for('booking') }}" class="btn btn-primary btn-lg mt-2">📋 Book Appointment</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

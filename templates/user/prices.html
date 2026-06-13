@@ -1,0 +1,116 @@
+{% extends "user/base.html" %}
+{% block title %}Stitching Prices — SLV Tailor Shop{% endblock %}
+{% block content %}
+
+<div class="page-banner">
+  <h1>Stitching Prices</h1>
+  <p>Transparent, affordable pricing for all dress types</p>
+</div>
+
+<section class="section">
+  <div class="container">
+
+    <!-- Men's Prices -->
+    {% set mens = prices | selectattr('gender', 'equalto', 'men') | list %}
+    {% if mens %}
+    <div class="mb-3">
+      <h2 style="margin-bottom:1rem;">👔 Men's Stitching Prices</h2>
+      <div class="table-wrapper">
+        <table class="price-table">
+          <thead>
+            <tr>
+              <th>Dress Type</th>
+              <th>Style</th>
+              <th>Price</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in mens %}
+            <tr>
+              <td><strong>{{ p.category_name }}</strong></td>
+              <td>{{ p.stitch_type }}</td>
+              <td class="price-amount">₹ {{ p.price | int }}</td>
+              <td><a href="{{ url_for('booking') }}" class="btn btn-sm btn-primary">Book</a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Women's Prices -->
+    {% set womens = prices | selectattr('gender', 'equalto', 'women') | list %}
+    {% if womens %}
+    <div class="mb-3">
+      <h2 style="margin-bottom:1rem;">👗 Women's Stitching Prices</h2>
+      <div class="table-wrapper">
+        <table class="price-table">
+          <thead>
+            <tr>
+              <th>Dress Type</th>
+              <th>Style</th>
+              <th>Price</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in womens %}
+            <tr>
+              <td><strong>{{ p.category_name }}</strong></td>
+              <td>{{ p.stitch_type }}</td>
+              <td class="price-amount">₹ {{ p.price | int }}</td>
+              <td><a href="{{ url_for('booking') }}" class="btn btn-sm btn-primary">Book</a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Unisex -->
+    {% set unisex = prices | selectattr('gender', 'equalto', 'unisex') | list %}
+    {% if unisex %}
+    <div class="mb-3">
+      <h2 style="margin-bottom:1rem;">✂️ Other Stitching Prices</h2>
+      <div class="table-wrapper">
+        <table class="price-table">
+          <thead><tr><th>Dress Type</th><th>Style</th><th>Price</th><th></th></tr></thead>
+          <tbody>
+            {% for p in unisex %}
+            <tr>
+              <td><strong>{{ p.category_name }}</strong></td>
+              <td>{{ p.stitch_type }}</td>
+              <td class="price-amount">₹ {{ p.price | int }}</td>
+              <td><a href="{{ url_for('booking') }}" class="btn btn-sm btn-primary">Book</a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if not prices %}
+    <div class="text-center" style="padding:3rem;color:var(--text-muted);">
+      <div style="font-size:3rem;">💰</div>
+      <p class="mt-2">Price list coming soon. Please call us for current rates.</p>
+      <a href="tel:9535536981" class="btn btn-primary mt-2">📞 Call for Prices</a>
+    </div>
+    {% endif %}
+
+    <!-- Notes -->
+    <div class="alert alert-info mt-3">
+      💡 <strong>Note:</strong> Prices may vary based on design complexity, fabric type, and special requirements. Contact us for custom quotes.
+    </div>
+
+    <div style="text-align:center;margin-top:2rem;">
+      <a href="{{ url_for('booking') }}" class="btn btn-primary btn-lg">📋 Book Your Stitching Now</a>
+      <span style="display:block;color:var(--text-muted);font-size:0.85rem;margin-top:0.5rem;">or call <a href="tel:9535536981">9535536981</a></span>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

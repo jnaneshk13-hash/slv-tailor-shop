@@ -1,0 +1,80 @@
+{% extends "admin/base.html" %}
+{% block title %}Designs{% endblock %}
+{% block content %}
+
+<div class="admin-header">
+  <h2>🎨 Design Images</h2>
+  <button class="btn btn-primary" onclick="openModal('addDesignModal')">➕ Add Design</button>
+</div>
+
+<div class="grid-4">
+  {% for design in designs %}
+  <div class="card">
+    {% if design.image_url %}
+      <img class="card-img lazy" data-src="{{ design.image_url }}"
+           src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+           alt="{{ design.name }}" style="height:180px;object-fit:cover;" loading="lazy">
+    {% else %}
+      <div style="height:180px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:var(--border);">🧵</div>
+    {% endif %}
+    <div class="card-body" style="padding:0.85rem;">
+      <div class="card-title" style="font-size:0.9rem;">{{ design.name }}</div>
+      <div class="card-text">{{ design.cat_name }}</div>
+      {% if design.featured %}<span class="badge" style="background:#FFF9C4;color:#F57F17;margin-top:0.3rem;">⭐ Featured</span>{% endif %}
+      <div style="display:flex;gap:0.4rem;margin-top:0.75rem;flex-wrap:wrap;">
+        <a href="{{ url_for('admin_delete_design', did=design.id) }}" class="btn btn-sm btn-danger w-100"
+           data-confirm="Delete '{{ design.name }}'?">🗑️ Delete</a>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--text-muted);">
+    <div style="font-size:3rem;">🎨</div>
+    <p>No designs yet. Add your first design!</p>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- Add Design Modal -->
+<div class="modal-overlay" id="addDesignModal">
+  <div class="modal" style="max-width:520px;">
+    <div class="modal-header">
+      <span class="modal-title">➕ Add Design</span>
+      <button class="modal-close" onclick="closeModal('addDesignModal')">×</button>
+    </div>
+    <form method="POST" action="{{ url_for('admin_add_design') }}" enctype="multipart/form-data">
+      <div class="form-group">
+        <label class="form-label">Design Name *</label>
+        <input type="text" name="name" class="form-control" required placeholder="e.g. V-Neck Blouse Design 1">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Category *</label>
+        <select name="category_id" class="form-control" required>
+          <option value="">Select category</option>
+          {% for cat in categories %}
+          <option value="{{ cat.id }}">{{ cat.name }} ({{ cat.gender.title() }})</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea name="description" class="form-control" rows="2" placeholder="Brief description of the design"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Design Image</label>
+        <input type="file" name="image" class="form-control" accept="image/*" style="padding:0.4rem;">
+        <div style="font-size:0.78rem;color:var(--text-muted);margin-top:0.3rem;">JPG, PNG, WebP — max 5MB. Images are compressed automatically.</div>
+      </div>
+      <div class="form-check form-group">
+        <input type="checkbox" name="featured" id="featuredCheck" value="1">
+        <label for="featuredCheck" class="form-label" style="margin:0;">⭐ Show as Featured on homepage</label>
+      </div>
+      <div style="display:flex;gap:0.75rem;justify-content:flex-end;">
+        <button type="button" class="btn btn-outline" onclick="closeModal('addDesignModal')">Cancel</button>
+        <button type="submit" class="btn btn-primary">Upload & Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

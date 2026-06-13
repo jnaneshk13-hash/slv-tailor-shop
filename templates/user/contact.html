@@ -1,0 +1,55 @@
+{% extends "user/base.html" %}
+{% block title %}Contact — SLV Tailor Shop{% endblock %}
+{% block content %}
+
+<div class="page-banner">
+  <h1>Contact Us</h1>
+  <p>We'd love to hear from you</p>
+</div>
+
+<section class="section">
+  <div class="container" style="max-width:800px;">
+    <div class="grid-2">
+      <div>
+        <h2 style="margin-bottom:1.25rem;">Get in Touch</h2>
+        {% for item in [
+          ('📞', 'Phone', '<a href="tel:9535536981">9535536981</a>', 'Call or WhatsApp us anytime'),
+          ('📍', 'Address', 'Arasanakunte, Solur Hobli,<br>Magadi Taluk, Bangalore - 562127', ''),
+          ('⏰', 'Working Hours', 'Mon – Sat: 9:00 AM – 7:00 PM', 'Closed on Sundays'),
+        ] %}
+        <div style="display:flex;gap:1rem;margin-bottom:1.5rem;align-items:flex-start;">
+          <div style="width:48px;height:48px;background:var(--accent-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;">{{ item[0] }}</div>
+          <div>
+            <div style="font-weight:700;margin-bottom:0.2rem;">{{ item[1] }}</div>
+            <div>{{ item[2] | safe }}</div>
+            {% if item[3] %}<div style="font-size:0.82rem;color:var(--text-muted);">{{ item[3] }}</div>{% endif %}
+          </div>
+        </div>
+        {% endfor %}
+
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1.5rem;">
+          <a href="tel:9535536981" class="btn btn-primary btn-lg">📞 Call Now</a>
+          <a href="{{ url_for('booking') }}" class="btn btn-accent btn-lg">📋 Book Appointment</a>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="card-body" style="padding:1.5rem;">
+            <h3 style="margin-bottom:1rem;">📍 Find Us</h3>
+            <div style="background:var(--bg2);border-radius:var(--radius-sm);padding:1.5rem;text-align:center;border:1px solid var(--border);">
+              <div style="font-size:3rem;margin-bottom:0.75rem;">🗺️</div>
+              <strong>SLV Tailor Shop</strong><br>
+              <span style="color:var(--text-muted);font-size:0.9rem;">Arasanakunte, Solur Hobli<br>Magadi Taluk, Bangalore - 562127</span><br><br>
+              <a href="https://maps.google.com/?q=Arasanakunte+Solur+Hobli+Magadi+Taluk+Bangalore" target="_blank" rel="noopener" class="btn btn-outline btn-sm">Open in Maps 🗺️</a>
+            </div>
+            <div class="alert alert-info mt-2" style="font-size:0.88rem;">
+              💡 We are near <strong>Solur village</strong> in Magadi Taluk. Call us for exact directions.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
